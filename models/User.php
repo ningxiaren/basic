@@ -137,6 +137,14 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         return $this->password === $password;
     }
+    
+    public function getworker()
+    {
+        $result=User::findOne($this->username);
+
+        return $result->worker;
+
+    }
 
     //插入用户信息
     public function InsertUserInfo()
@@ -184,5 +192,30 @@ EOF;
         $row=$command->queryOne();
         return $row['username'];  
         
+    }
+    public function FindUserpsw($id)
+    {
+        $db=\yii::$app->db;
+        $sql=<<<EOF
+                select password from user
+                where username="$id"
+EOF;
+        $command=$db->createCommand($sql);
+        $row=$command->queryOne();
+        return $row['password'];
+    }
+    public function editSchoolpsw($id)
+    {
+        $get=\yii::$app->request;
+        $new_psw=$get->get('New_psw');
+        $old_psw=$get->get('Old_psw');
+        $sql=<<<EOF
+        update user set password=$new_psw
+               where password=$old_psw and username=$id
+                   
+EOF;
+        $db=\Yii::$app->db;
+        $command=$db->createCommand($sql);
+        $command->execute();
     }
 }

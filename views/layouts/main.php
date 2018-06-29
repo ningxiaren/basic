@@ -10,6 +10,9 @@ use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 AppAsset::register($this);
+$session=\yii::$app->session;
+$id=$session->get('__id');
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -39,6 +42,8 @@ AppAsset::register($this);
         'items' => [
             ['label' => '首页', 'url' => ['/site/index']],
             ['label' => '注册', 'url' => ['/site/contact']],
+            ['label' => '家教中心','url' =>['/teacher/index']],
+            ['label' => '学生中心','url' =>['/student/index']],
             Yii::$app->user->isGuest ? (
                 ['label' => '登录', 'url' => ['/site/login']]
             ) : (
@@ -50,7 +55,34 @@ AppAsset::register($this);
                 )
                 . Html::endForm()
                 . '</li>'
-            )
+            ),
+            Yii::$app->user->isGuest ? (
+                ['label' => '',]
+            ) :
+            ['label' =>'基本操作',
+                 'icon'=>'share',
+                  'url'=>'#',
+                  'items'=>[
+                      ['label'=>'修改密码','url'=>['/site/changepsw']],
+                      ['label'=>'查看个人信息','url'=>['/teacher/view?id='.$id,],
+                        'visible'=>Yii::$app->user->identity->worker=='家教',
+                        ],
+                      ['label'=>'查看个人信息','url'=>['/student/view?id='.$id,],
+                        'visible'=>Yii::$app->user->identity->worker=='家长',
+                        ],
+                      
+                      ['label'=>'修改个人信息','url'=>['/teacher/update?id='.$id,],
+                           'visible'=>Yii::$app->user->identity->worker=='家教',
+                          ],
+                      ['label'=>'修改个人信息','url'=>['/student/update?id='.$id,],
+                           'visible'=>Yii::$app->user->identity->worker=='家长',
+                       ],
+                      ['label'=>'查看课程信息','url'=>['/select/index']],
+                      ['label'=>'匹配结果信息','url'=>['/match/index']],
+ 
+                      
+                      
+                  ]],
         ],
     ]);
     NavBar::end();
@@ -66,7 +98,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; 信1501-1 337宿舍 <?= date('Y') ?></p>
+        <p class="pull-left">版权所有：&copy; 信1501-1 337宿舍 <?= date('Y') ?></p>
     </div>
 </footer>
 

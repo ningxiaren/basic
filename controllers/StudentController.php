@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Teacher;
+use app\models\Student;
 use app\models\SelectClass;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
@@ -11,9 +11,9 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TeacherController implements the CRUD actions for Teacher model.
+ * StudentController implements the CRUD actions for Student model.
  */
-class TeacherController extends Controller
+class StudentController extends Controller
 {
     /**
      * @inheritdoc
@@ -31,13 +31,13 @@ class TeacherController extends Controller
     }
 
     /**
-     * Lists all Teacher models.
+     * Lists all Student models.
      * @return mixed
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Teacher::find(),
+            'query' => Student::find(),
         ]);
 
         return $this->render('index', [
@@ -46,7 +46,7 @@ class TeacherController extends Controller
     }
 
     /**
-     * Displays a single Teacher model.
+     * Displays a single Student model.
      * @param string $id
      * @return mixed
      */
@@ -57,13 +57,9 @@ class TeacherController extends Controller
         ]);
     }
 
+
     /**
-     * Creates a new Teacher model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    /**
-     * Updates an existing Teacher model.
+     * Updates an existing Student model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
@@ -73,7 +69,7 @@ class TeacherController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->teacher_phone]);
+            return $this->redirect(['view', 'id' => $model->family_phone]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -81,30 +77,29 @@ class TeacherController extends Controller
         }
     }
 
- 
+
     /**
-     * Finds the Teacher model based on its primary key value.
+     * Finds the Student model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id
-     * @return Teacher the loaded model
+     * @return Student the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Teacher::findOne($id)) !== null) {
+        if (($model = Student::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-    
-    public function actionTeacher_info($id)
+    public function actionStudent_info($id)
     {
-        $teacher=new Teacher();
+        $student=new Student();
         $select=new SelectClass();
-        $model1=$teacher->findSelectInfo($id);
+        $model1=$student->findSelectInfo($id);
         $model2=$select->findSelectInfo($id);
-        return $this->render('teacher_info',['model1'=>$model1,
+        return $this->render('student_info',['model1'=>$model1,
                                              'model2'=>$model2]);
         
     }

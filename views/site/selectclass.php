@@ -8,12 +8,15 @@ use yii\widgets\ActiveForm;
 /* @var $form ActiveForm */
 $session=\yii::$app->session;
 $username=$session->get('username');
+$date=date("Y-m-d",time());
 ?>
 <div class="selectclass">
 
     <?php $form = ActiveForm::begin(); ?>
     <div style="width:40%">
         <?= $form->field($s_model, 'user_name')->textInput(['value'=>"$username",'readOnly'=>'true']) ?>
+        
+        <?= $form->field($s_model, 'create_time')->textInput(['value'=>"$date",'readOnly'=>'true']) ?>
     </div>
         <?= $form->field($s_model, 'school_rank')->dropDownList(['小学'=>"小学",'初中'=>"初中",'高中'=>"高中"],
                                                 ['prompt'=>"请选择..",'style'=>'width:40%']) ?>
@@ -23,7 +26,7 @@ $username=$session->get('username');
        
     
         <div class="form-group">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+            <?= Html::submitButton('提交', ['class' => 'btn btn-primary']) ?>
         </div>
     <?php ActiveForm::end(); ?>
 

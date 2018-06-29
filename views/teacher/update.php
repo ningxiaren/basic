@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 $this->title = '修改教师信息: ' ;
 $this->params['breadcrumbs'][] = ['label' => '教师', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->teacher_name, 'url' => ['view', 'id' => $model->teacher_name]];
+$this->params['breadcrumbs'][] = ['label' => $model->teacher_name, 'url' => ['view', 'id' => $model->teacher_phone]];
 $this->params['breadcrumbs'][] = '修改';
 ?>
 <div class="teacher-update">

@@ -10,6 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Teacher;
+use app\models\Student;
 use app\models\User;
 use app\models\course;
 use app\models\SelectClass;
@@ -93,11 +94,20 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
          
         $session=\yii::$app->session;
-        print_r($_SESSION);
         $id=$session->get('__id');
-        return $this->render('teacher_info', [
-            'model' => $this->findModel($id),
+        if(Yii::$app->user->identity->worker=='家教')
+        {
+           return $this->render('..\teacher\view', [
+              'model' => $this->findModel($id),
+             ]);
+          
+        }
+        if(Yii::$app->user->identity->worker=='家长')
+        {
+            return $this->render('..\student\view', [
+                'model' => $this->findModel($id),
         ]);
+        }
 
         }
         return $this->render('login', [
@@ -149,7 +159,6 @@ class SiteController extends Controller
          //   print_r($_SESSION);die;
             //echo "jhbjhbjh";die;
         }
-
         
         if($model['worker']=="家教")   //第一次用post得到的值判断用户种类
         {
@@ -158,7 +167,8 @@ class SiteController extends Controller
         }
         if($model['worker']=='家长')
         {
-             return $this->render('student_detail',['t_model'=>$t_model,]);
+            $t_model=new Student();
+            return $this->render('student_detail',['t_model'=>$t_model,]);
         }
         
         if($userworker['worker']=="家教")   //用session值得到用户种类
@@ -169,11 +179,25 @@ class SiteController extends Controller
             {
                 $session=\yii::$app->session;
                 $username=$session->get('username');
-                $exists = Teacher::find()->where([ 'teacher_name' => $username])->exists(); 
-                if($exists)
-                {
-                    $t_model->deleteAll(['teacher_name'=>$username]);
-                }
+                $t_model->insert();
+                //选课；
+                return $this->render('selectclass',['s_model'=>$s_model]);
+            }
+            if($s_model->load(Yii::$app->request->post()))
+            {
+                $s_model->insert();
+                return $this->actionLogin();
+            }
+
+        }
+        if($userworker['worker']=="家长")   //用session值得到用户种类
+        {
+            $t_model=new Student();
+            $s_model=new SelectClass();
+            if($t_model->load(Yii::$app->request->post()))
+            {
+                $session=\yii::$app->session;
+                $username=$session->get('username');
                 $t_model->insert();
                 //选课；
                 return $this->render('selectclass',['s_model'=>$s_model]);
@@ -204,10 +228,36 @@ class SiteController extends Controller
     //跳转用户教师主页
     protected function findModel($id)
     {
-        if (($model = Teacher::findOne($id)) !== null) {
+        if ((($model = Teacher::findOne($id)) !== null)||(($model = Student::findOne($id)) !== null)) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    
+    public function actionChangepsw()
+    {
+        if(Yii::$app->user->isGuest){
+            echo "<script>alert('还未登录')</script>";
+            
+             return $this->actionLogin();
+        }
+
+        $session=\yii::$app->session;
+        $id=$session->get('__id');
+        $user=new User();
+        //echo $user->FindUserpsw($id);
+        
+        return $this->render('change_password',['password'=>$user->FindUserpsw($id)]);
+    }
+    public function actionUpdatepsw()
+    {
+        $session=\yii::$app->session;
+        $id=$session->get('__id');
+        $user=new User();
+        $user->editSchoolpsw($id);
+        echo "<script>alert('请重新登录')</script>";
+        return $this->actionLogout();
+    }
+
 }

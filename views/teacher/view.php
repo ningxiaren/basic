@@ -20,14 +20,17 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+            'teacher_phone',
             'teacher_name',
+            'teacher_education',
             'teacher_sex',
             'teacher_age',
             'teacher_address',
+            'teacher_introduce'
         ],
     ]) ?>
     <p>
-        <?= Html::a('修改', ['update', 'id' => $model->teacher_name], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('修改', ['..\teacher\update', 'id' => $model->teacher_phone], ['class' => 'btn btn-primary']) ?>
     </p>
 
 </div>

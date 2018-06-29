@@ -31,11 +31,12 @@ class Teacher extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['teacher_name', 'teacher_sex', 'teacher_age', 'teacher_address'], 'required'],
-            [['teacher_age'], 'integer'],
-            [['teacher_name'], 'string', 'max' => 11],
+            [['teacher_phone', 'teacher_sex', 'teacher_age', 'teacher_address','teacher_name','teacher_education'], 'required','message'=>'{attribute}不能为空'],
+            [['teacher_age'], 'integer','max'=>80,'min'=>15,'message'=>'{attribute}输入错误!'],
+            [['teacher_phone'], 'string', 'max' => 11],
             [['teacher_sex'], 'string', 'max' => 5],
             [['teacher_address'], 'string', 'max' => 100],
+            [['teacher_introduce'],'string','max'=>255]
         ];
     }
 
@@ -46,22 +47,27 @@ class Teacher extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'teacher_name' => '家教姓名',
+            'teacher_phone' => '家教电话',
+            'teacher_name'=>'家教姓名',
             'teacher_sex' => '家教性别',
             'teacher_age' => '家教年龄',
             'teacher_address' => '家教住址',
+            'teacher_education' =>'身份类型',
+            'teacher_introduce' =>'个人简介'
         ];
     }
-    
-    //查询教师相关所有信息;
-   /* public function findAllInfo()
+    public function findSelectInfo($id)
     {
-        $db=\Yii::$app->db;
+        $db=\yii::$app->db;
         $sql=<<<EOF
-                select teacher_name,teacher_sex,teacher_address,teacher_age,class_name,school_rank
-                from teacher,select_class
-                where teacher.teacher_name=select_class.usernmame
-    }*/
+                select teacher_phone,teacher_name,teacher_education,teacher_sex,teacher_age,teacher_address,teacher_introduce from teacher
+                where teacher_phone =$id;
+EOF;
+        $command=$db->createCommand($sql);
+        $row=$command->queryOne();
+        return $row;
+    }
+
 
   
 

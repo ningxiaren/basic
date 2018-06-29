@@ -31,6 +31,7 @@ class SelectClass extends \yii\db\ActiveRecord
             [['class_name', 'user_name'], 'required'],
             [['class_name', 'user_name'], 'string', 'max' => 20],
             [['school_rank'], 'string', 'max' => 10],
+            [['create_time'],'string','max'=>20]
         ];
     }
 
@@ -44,6 +45,18 @@ class SelectClass extends \yii\db\ActiveRecord
             'class_name' => '课程名',
             'user_name' => '用户名',
             'school_rank' => '教学年级',
+            'create_time'=>'添加时间'
         ];
+    }
+    public function findSelectInfo($id)
+    {
+        $db=\yii::$app->db;
+        $sql=<<<EOF
+                select class_name,school_rank,create_time from select_class
+                where user_name =$id;
+EOF;
+        $command=$db->createCommand($sql);
+        $row=$command->queryOne();
+        return $row;
     }
 }
